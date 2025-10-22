@@ -1,18 +1,22 @@
 package com.AREP.Parcial;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import com.sun.net.httpserver.HttpServer; 
+import java.io.IOException; 
+import java.io.OutputStream; 
+import java.net.InetSocketAddress; 
+import java.util.ArrayList; 
+import java.util.List;
 
-public class HttpConnection {
+public class PellHttp {
 
-    private static final String USER_AGENT = "Mozilla/5.0";
-    private static final String GET_URL = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=fb&apikey=Q1QZFVJQ21K7C6XM";
+public static void main(String[] args) throws IOException {
+    HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+    server.createContext("/pellseq", new PellHandler());
+    server.setExecutor(null);
+    server.start();
+}
 
-    public static void main(String[] args) throws IOException {
+public static void main(String[] args) throws IOException {
 
         URL obj = new URL(GET_URL);
         HttpURLConnection con = (HttpURLConnection) obj.openConnection();
@@ -32,7 +36,7 @@ public class HttpConnection {
                 response.append(inputLine);
             }
             in.close();
-
+        
             System.out.println(response.toString());
         } else {
             System.out.println("GET request not worked");
@@ -40,4 +44,10 @@ public class HttpConnection {
         System.out.println("GET DONE");
     }
 
-} 
+     String json = "{\n" +
+                "  \"operation\": \"Secuencia de Pell\",\n" +
+                "  \"input\": " + n + ",\n" +
+                "  \"output\": " + sequence.toString() + "\n" +
+                "}";
+
+}
